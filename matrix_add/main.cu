@@ -1,5 +1,5 @@
 #include <sys/time.h>
-#include <iostream>
+#include <stdio.h>
 
 // time stamp function in seconds
 double getTimeStamp() {
