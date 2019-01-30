@@ -1,3 +1,5 @@
+#include <sys/time.h> 
+
 // time stamp function in seconds
 double getTimeStamp() {
     struct timeval tv;
