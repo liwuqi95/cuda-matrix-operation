@@ -11,7 +11,7 @@ double getTimeStamp() {
 void h_addmat(float *A, float *B, float *C, int nx, int ny) {}
 
 // device-side matrix addition
-__global__ f_addmat(float *A, float *B, float *C, int nx, int ny) {
+__global__ void f_addmat(float *A, float *B, float *C, int nx, int ny) {
     // kernel code might look something like this
     // but you may want to pad the matrices and index into them accordingly
     int ix = threadId.x + bloackId.x * blockDim.x;
