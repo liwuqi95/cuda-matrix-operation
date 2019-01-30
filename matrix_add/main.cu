@@ -1,7 +1,4 @@
 #include <sys/time.h>
-#include "cuda.h"
-#include "cuda_runtime.h"
-#include "device_launch_parameters.h"
 
 // time stamp function in seconds
 double getTimeStamp() {
@@ -13,12 +10,22 @@ double getTimeStamp() {
 // host side matrix addition
 void h_addmat(float *A, float *B, float *C, int nx, int ny) {}
 
+void initDataA(float *M, int num){
+
+	int i = 0;
+	for(i=0; i < num; i++){
+	
+		M[i] = ((float)rand()/(float)(RAND_MAX)))
+}
+
+}
+
 // device-side matrix addition
 __global__ void f_addmat(float *A, float *B, float *C, int nx, int ny) {
     // kernel code might look something like this
     // but you may want to pad the matrices and index into them accordingly
-    int ix = threadId.x + bloackId.x * blockDim.x;
-    int iy = threadId.y + bloackId.y * blockDim.y;
+    int ix = threadIdx.x + blockIdx.x * blockDim.x;
+    int iy = threadIdx.y + blockIdx.y * blockDim.y;
     int idx = iy * ny + ix;
     if ((ix < nx) && (iy < ny))
         C[idx] = A[idx] + B[idx];
@@ -28,7 +35,7 @@ int main(int argc, char *argv[]) {
     // get program arguments
     if (argc != 3) {
         printf("Error: wrong number of args\n");
-        exit();
+        exit(1);
     }
     int nx = atoi(argv[2]); // should check validity
     int ny = atoi(argv[3]); // should check validity
@@ -43,8 +50,8 @@ int main(int argc, char *argv[]) {
     float *h_dC = (float *) malloc(bytes); // gpu result
 
     // init matrices with random data
-    initData(h_A, noElems);
-    initData(h_B, noElems);
+    initDataA(h_A, noElems);
+    initDataB(h_B, noElems);
     // alloc memory dev-side
     float *d_A, *d_B, *d_C;
     cudaMalloc((void **) &d_A, bytes);
@@ -68,7 +75,7 @@ int main(int argc, char *argv[]) {
 
     double timeStampC = getTimeStamp();
     //copy data back
-    cudaMemCpy(h_dC, d_C, bytes, cudaMemcpyDeviceToHost);
+    cudaMemcpy(h_dC, d_C, bytes, cudaMemcpyDeviceToHost);
     double timeStampD = getTimeStamp();
 
     // free GPU resources
