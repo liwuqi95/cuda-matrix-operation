@@ -41,9 +41,7 @@ int main(int argc, char *argv[]) {
     float *h_dC = (float *) malloc(bytes); // gpu result
 
     // init matrices with random data
-    initDataA(h_A, noElems);
 
-    //init A
     int i, j;
     for (i = 0; i < nx; i++)
         for (j = 0; j < ny; j++) {
