@@ -10,14 +10,6 @@ double getTimeStamp() {
 // host side matrix addition
 void h_addmat(float *A, float *B, float *C, int nx, int ny) {}
 
-void initDataA(float *M, int num) {
-
-    int i = 0;
-    for (i = 0; i < num; i++) {
-        M[i] = ((float) rand() / (float) (RAND_MAX)))
-    }
-
-}
 
 // device-side matrix addition
 __global__ void f_addmat(float *A, float *B, float *C, int nx, int ny) {
