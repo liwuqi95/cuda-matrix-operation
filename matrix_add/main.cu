@@ -52,13 +52,11 @@ int main(int argc, char *argv[]) {
     initDataA(h_A, noElems);
 
     //init A
-    int i, y;
+    int i, j;
     for (i = 0; i < nx; i++)
         for (j = 0; j < ny; j++) {
             h_A[i][j] = (float) (i + j) / 3.0;
             h_B[i][j] = (float) 3.14 * (i + j);
-
-
         }
 
 
