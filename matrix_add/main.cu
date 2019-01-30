@@ -10,13 +10,12 @@ double getTimeStamp() {
 // host side matrix addition
 void h_addmat(float *A, float *B, float *C, int nx, int ny) {}
 
-void initDataA(float *M, int num){
+void initDataA(float *M, int num) {
 
-	int i = 0;
-	for(i=0; i < num; i++){
-	
-		M[i] = ((float)rand()/(float)(RAND_MAX)))
-}
+    int i = 0;
+    for (i = 0; i < num; i++) {
+        M[i] = ((float) rand() / (float) (RAND_MAX)))
+    }
 
 }
 
@@ -51,7 +50,18 @@ int main(int argc, char *argv[]) {
 
     // init matrices with random data
     initDataA(h_A, noElems);
-    initDataB(h_B, noElems);
+
+    //init A
+    int i, y;
+    for (i = 0; i < nx; i++)
+        for (j = 0; j < ny; j++) {
+            h_A[i][j] = (float) (i + j) / 3.0;
+            h_B[i][j] = (float) 3.14 * (i + j);
+
+
+        }
+
+
     // alloc memory dev-side
     float *d_A, *d_B, *d_C;
     cudaMalloc((void **) &d_A, bytes);
