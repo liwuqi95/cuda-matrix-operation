@@ -42,11 +42,12 @@ int main(int argc, char *argv[]) {
 
     // init matrices with random data
 
-    int i, j;
+    int i, j, index;
     for (i = 0; i < nx; i++)
         for (j = 0; j < ny; j++) {
-            h_A[i][j] = (float) (i + j) / 3.0;
-            h_B[i][j] = (float) 3.14 * (i + j);
+            index = i * ny + j;
+            h_A[index] = (float) (i + j) / 3.0;
+            h_B[index] = (float) 3.14 * (i + j);
         }
 
 
