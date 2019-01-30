@@ -1,4 +1,4 @@
-#include <sys/time.h> 
+#include <sys/time.h>
 
 // time stamp function in seconds
 double getTimeStamp() {
@@ -8,7 +8,7 @@ double getTimeStamp() {
 }
 
 // host side matrix addition
-h_addmat(float *A, float *B, float *C, int nx, int ny) { … }
+void h_addmat(float *A, float *B, float *C, int nx, int ny) {}
 
 // device-side matrix addition
 __global__ f_addmat(float *A, float *B, float *C, int nx, int ny) {
@@ -24,7 +24,7 @@ __global__ f_addmat(float *A, float *B, float *C, int nx, int ny) {
 int main(int argc, char *argv[]) {
     // get program arguments
     if (argc != 3) {
-        printf( "Error: wrong number of args\n" );
+        printf("Error: wrong number of args\n");
         exit();
     }
     int nx = atoi(argv[2]); // should check validity
