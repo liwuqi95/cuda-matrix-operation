@@ -53,8 +53,8 @@ int main(int argc, char *argv[]) {
 
     double timeStampA = getTimeStamp();
     //transfer data to dev
-    cudaMemcpy(d_A, h_A, bytes, cudaMemCpyHostToDevice);
-    cudaMemcpy(d_B, h_B, bytes, cudaMemCpyHostToDevice);
+    cudaMemcpy(d_A, h_A, bytes, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_B, h_B, bytes, cudaMemcpyHostToDevice);
     // note that the transfers would be twice as fast if h_A and h_B
     // matrices are pinned
     double timeStampB = getTimeStamp();
@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
 
     double timeStampC = getTimeStamp();
     //copy data back
-    cudaMemCpy(h_dC, d_C, bytes, cudaMemCpyDeviceToHost);
+    cudaMemCpy(h_dC, d_C, bytes, cudaMemcpyDeviceToHost);
     double timeStampD = getTimeStamp();
 
     // free GPU resources
