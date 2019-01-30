@@ -1,4 +1,5 @@
 #include <sys/time.h>
+#include <cuda.h>
 
 // time stamp function in seconds
 double getTimeStamp() {
