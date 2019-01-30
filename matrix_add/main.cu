@@ -1,5 +1,7 @@
 #include <sys/time.h>
-#include <cuda.h>
+#include "cuda.h"
+#include "cuda_runtime.h"
+#include "device_launch_parameters.h"
 
 // time stamp function in seconds
 double getTimeStamp() {
