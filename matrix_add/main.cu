@@ -9,7 +9,17 @@ double getTimeStamp() {
 }
 
 // host side matrix addition
-void h_addmat(float *A, float *B, float *C, int nx, int ny) {}
+bool h_addmat(float *A, float *B, float *C, int nx, int ny) {
+    int i, j;
+    for (i = 0; i < nx; i++)
+        for (j = 0; j < ny; j++) {
+            int index = i * ny + j;
+            if (A[index] + B[index] != C[index])
+                return false;
+        }
+
+    return true;
+}
 
 
 // device-side matrix addition
@@ -43,11 +53,11 @@ int main(int argc, char *argv[]) {
     float *h_B = (float *) malloc(bytes);
     float *h_hC = (float *) malloc(bytes); // host result
     float *h_dC = (float *) malloc(bytes); // gpu result
-	
-	cudaHostRegister(h_A, bytes, 0);
-	cudaHostRegister(h_B, bytes, 0);
-	cudaHostRegister(h_hC, bytes, 0);
-	cudaHostRegister(h_dC, bytes, 0);
+
+    cudaHostRegister(h_A, bytes, 0);
+    cudaHostRegister(h_B, bytes, 0);
+    cudaHostRegister(h_hC, bytes, 0);
+    cudaHostRegister(h_dC, bytes, 0);
 
     // init matrices with random data
 
@@ -93,15 +103,19 @@ int main(int argc, char *argv[]) {
     cudaDeviceReset();
 
     // check result
-    h_addmat(h_A, h_B, h_hC, nx, ny);
-    // h_dC == h+hC???
+    if (h_addmat(h_A, h_B, h_hC, nx, ny))
+        printf('Correct!\n');
+    else
+        printf('Incorrect!\n');
+
+
+    cudaHostUnregister(h_A);
+    cudaHostUnregister(h_B);
+    cudaHostUnregister(h_hC);
+    cudaHostUnregister(h_dC);
+
+
     // print out results
-
-	cudaHostUnregister(h_A);
-	cudaHostUnregister(h_B);
-	cudaHostUnregister(h_hC);
-	cudaHostUnregister(h_dC);
-	
-
-	printf("%.6f %.6f %.6f %.6f", timeStampD - timeStampA, timeStampB - timeStampA, timeStampC - timeStampB, timeStampD - timeStampC);
+    printf("%.6f %.6f %.6f %.6f", timeStampD - timeStampA, timeStampB - timeStampA, timeStampC - timeStampB,
+           timeStampD - timeStampC);
 }
