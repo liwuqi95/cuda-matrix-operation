@@ -29,8 +29,11 @@ int main(int argc, char *argv[]) {
         printf("Error: wrong number of args\n");
         exit(1);
     }
-    int nx = atoi(argv[2]); // should check validity
-    int ny = atoi(argv[3]); // should check validity
+
+
+    int nx = atoi(argv[1]); // should check validity
+    int ny = atoi(argv[2]); // should check validity
+
     int noElems = nx * ny;
     int bytes = noElems * sizeof(float);
     // but you may want to pad the matrices…
@@ -40,6 +43,11 @@ int main(int argc, char *argv[]) {
     float *h_B = (float *) malloc(bytes);
     float *h_hC = (float *) malloc(bytes); // host result
     float *h_dC = (float *) malloc(bytes); // gpu result
+	
+	cudaHostRegister(h_A, bytes, 0);
+	cudaHostRegister(h_B, bytes, 0);
+	cudaHostRegister(h_hC, bytes, 0);
+	cudaHostRegister(h_dC, bytes, 0);
 
     // init matrices with random data
 
@@ -88,4 +96,12 @@ int main(int argc, char *argv[]) {
     h_addmat(h_A, h_B, h_hC, nx, ny);
     // h_dC == h+hC???
     // print out results
+
+	cudaHostUnregister(h_A);
+	cudaHostUnregister(h_B);
+	cudaHostUnregister(h_hC);
+	cudaHostUnregister(h_dC);
+	
+
+	printf("%.6f %.6f %.6f %.6f", timeStampD - timeStampA, timeStampB - timeStampA, timeStampC - timeStampB, timeStampD - timeStampC);
 }
