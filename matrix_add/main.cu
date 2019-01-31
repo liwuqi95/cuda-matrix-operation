@@ -9,16 +9,13 @@ double getTimeStamp() {
 }
 
 // host side matrix addition
-bool h_addmat(float *A, float *B, float *C, int nx, int ny) {
+void h_addmat(float *A, float *B, float *C, int nx, int ny) {
     int i, j;
     for (i = 0; i < nx; i++)
         for (j = 0; j < ny; j++) {
             int index = i * ny + j;
-            if (A[index] + B[index] != C[index])
-                return false;
+            C[index] = A[index] + B[index];
         }
-
-    return true;
 }
 
 
@@ -56,7 +53,6 @@ int main(int argc, char *argv[]) {
 
     cudaHostRegister(h_A, bytes, 0);
     cudaHostRegister(h_B, bytes, 0);
-    cudaHostRegister(h_hC, bytes, 0);
     cudaHostRegister(h_dC, bytes, 0);
 
     // init matrices with random data
@@ -85,7 +81,7 @@ int main(int argc, char *argv[]) {
     double timeStampB = getTimeStamp();
 
     // invoke Kernel
-    dim3 block(32, 32); // you will want to configure this
+    dim3 block(64, 1); // you will want to configure this
     dim3 grid((nx + block.x - 1) / block.x, (ny + block.y - 1) / block.y);
 
     f_addmat << < grid, block >> > (d_A, d_B, d_C, nx, ny);
@@ -103,19 +99,26 @@ int main(int argc, char *argv[]) {
     cudaDeviceReset();
 
     // check result
-    if (h_addmat(h_A, h_B, h_hC, nx, ny))
-        printf('Correct!\n');
-    else
-        printf('Incorrect!\n');
+    h_addmat(h_A, h_B, h_hC, nx, ny);
+
+	bool correct = true;
+
+	for(i = 0; i < nx * ny; i++)
+		if(h_hC[i] != h_dC[i])
+			{correct = false; break;}
+
+	if (correct)
+		printf("Result Correct! \n");
+	else
+		printf("Result Incorrect! \n");
 
 
     cudaHostUnregister(h_A);
     cudaHostUnregister(h_B);
-    cudaHostUnregister(h_hC);
     cudaHostUnregister(h_dC);
 
 
     // print out results
-    printf("%.6f %.6f %.6f %.6f", timeStampD - timeStampA, timeStampB - timeStampA, timeStampC - timeStampB,
+    printf("%.6f %.6f %.6f %.6f \n", timeStampD - timeStampA, timeStampB - timeStampA, timeStampC - timeStampB,
            timeStampD - timeStampC);
 }
