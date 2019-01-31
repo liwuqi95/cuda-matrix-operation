@@ -107,10 +107,8 @@ int main(int argc, char *argv[]) {
 		if(h_hC[i] != h_dC[i])
 			{correct = false; break;}
 
-	if (correct)
-		printf("Result Correct! \n");
-	else
-		printf("Result Incorrect! \n");
+	if (!correct)
+		printf("Error: Result Incorrect! \n");
 
 
     cudaHostUnregister(h_A);
