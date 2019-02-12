@@ -26,8 +26,11 @@ __global__ void f_addmat(float *A, float *B, float *C, int nx, int ny) {
     int ix = threadIdx.x + blockIdx.x * blockDim.x;
     int iy = threadIdx.y + blockIdx.y * blockDim.y;
     int idx = iy * ny + ix;
-    if ((ix < nx) && (iy < ny))
+    if ((ix < nx) && (iy < ny)){
         C[idx] = A[idx] + B[idx];
+        printf("%.6f ",C[idx]);
+    }
+
 }
 
 int main(int argc, char *argv[]) {
