@@ -111,6 +111,14 @@ int main(int argc, char *argv[]) {
 		printf("Error: Result Incorrect! \n");
 
 
+	for(i =0; i< nx * ny; i++){
+	    printf("%.6f ",h_hC[i]);
+	}
+
+    for(i =0; i< nx * ny; i++){
+        printf("%.6f ",h_dC[i]);
+    }
+
     cudaHostUnregister(h_A);
     cudaHostUnregister(h_B);
     cudaHostUnregister(h_dC);
