@@ -20,13 +20,11 @@ void h_addmat(float *A, float *B, float *C, int nx, int ny) {
 
 
 // device-side matrix addition
-__global__ void f_addmat(float *A, float *B, float *C, int nx, int ny) {
+__global__ void f_addmat(float *A, float *B, float *C, int noElems) {
     // kernel code might look something like this
     // but you may want to pad the matrices and index into them accordingly
     int idx = threadIdx.x + blockIdx.x * blockDim.x;
-//    int iy = threadIdx.y + blockIdx.y * blockDim.y;
-//    int idx = iy * nx + ix;
-    if (idx < nx * ny)
+    if (idx < noElems)
         C[idx] = A[idx] + B[idx];
 }
 
@@ -84,7 +82,7 @@ int main(int argc, char *argv[]) {
     dim3 block(1024, 1); // you will want to configure this
     dim3 grid((noElems + 1023) / 1024);
 
-    f_addmat << < grid, block >> > (d_A, d_B, d_C, nx, ny);
+    f_addmat << < grid, block >> > (d_A, d_B, d_C, noElems);
     cudaDeviceSynchronize();
 
     double timeStampC = getTimeStamp();
