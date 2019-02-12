@@ -28,10 +28,6 @@ __global__ void f_addmat(float *A, float *B, float *C, int nx, int ny) {
     int idx = iy * nx + ix;
     if ((ix < nx) && (iy < ny))
         C[idx] = A[idx] + B[idx];
-
-    printf("GPU INFO %d %d %idx", ix, iy, idx);
-
-
 }
 
 int main(int argc, char *argv[]) {
@@ -115,16 +111,7 @@ int main(int argc, char *argv[]) {
 
     if (!correct)
         printf("Error: Result Incorrect! \n");
-
-
-    for (i = 0; i < nx * ny; i++) {
-        printf("%.6f ", h_hC[i]);
-    }
-
-    for (i = 0; i < nx * ny; i++) {
-        printf("%.6f ", h_dC[i]);
-    }
-
+    
     cudaHostUnregister(h_A);
     cudaHostUnregister(h_B);
     cudaHostUnregister(h_dC);
