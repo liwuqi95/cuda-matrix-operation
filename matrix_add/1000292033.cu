@@ -25,7 +25,7 @@ __global__ void f_addmat(float *A, float *B, float *C, int nx, int ny) {
     // but you may want to pad the matrices and index into them accordingly
     int ix = threadIdx.x + blockIdx.x * blockDim.x;
     int iy = threadIdx.y + blockIdx.y * blockDim.y;
-    int idx = iy * ny + ix;
+    int idx = iy * nx + ix;
     if ((ix < nx) && (iy < ny))
         C[idx] = A[idx] + B[idx];
 
