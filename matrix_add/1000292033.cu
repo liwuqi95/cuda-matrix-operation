@@ -26,10 +26,11 @@ __global__ void f_addmat(float *A, float *B, float *C, int nx, int ny) {
     int ix = threadIdx.x + blockIdx.x * blockDim.x;
     int iy = threadIdx.y + blockIdx.y * blockDim.y;
     int idx = iy * ny + ix;
-    if ((ix < nx) && (iy < ny)){
+    if ((ix < nx) && (iy < ny))
         C[idx] = A[idx] + B[idx];
-        printf("%.6f ",C[idx]);
-    }
+
+    printf("GPU INFO %d %d %idx", ix, iy, idx);
+
 
 }
 
@@ -104,22 +105,24 @@ int main(int argc, char *argv[]) {
     // check result
     h_addmat(h_A, h_B, h_hC, nx, ny);
 
-	bool correct = true;
+    bool correct = true;
 
-	for(i = 0; i < nx * ny; i++)
-		if(h_hC[i] != h_dC[i])
-			{correct = false; break;}
+    for (i = 0; i < nx * ny; i++)
+        if (h_hC[i] != h_dC[i]) {
+            correct = false;
+            break;
+        }
 
-	if (!correct)
-		printf("Error: Result Incorrect! \n");
+    if (!correct)
+        printf("Error: Result Incorrect! \n");
 
 
-	for(i =0; i< nx * ny; i++){
-	    printf("%.6f ",h_hC[i]);
-	}
+    for (i = 0; i < nx * ny; i++) {
+        printf("%.6f ", h_hC[i]);
+    }
 
-    for(i =0; i< nx * ny; i++){
-        printf("%.6f ",h_dC[i]);
+    for (i = 0; i < nx * ny; i++) {
+        printf("%.6f ", h_dC[i]);
     }
 
     cudaHostUnregister(h_A);
