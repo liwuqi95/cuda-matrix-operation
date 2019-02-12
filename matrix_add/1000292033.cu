@@ -24,8 +24,9 @@ __global__ void f_addmat(float *A, float *B, float *C, int nx, int ny) {
     // kernel code might look something like this
     // but you may want to pad the matrices and index into them accordingly
     int ix = threadIdx.x + blockIdx.x * blockDim.x;
-    int idx = ix;
-    if ((idx < nx * ny)
+    int iy = threadIdx.y + blockIdx.y * blockDim.y;
+    int idx = iy * nx + ix;
+    if ((ix < nx) && (iy < ny))
         C[idx] = A[idx] + B[idx];
 }
 
@@ -79,11 +80,9 @@ int main(int argc, char *argv[]) {
     // matrices are pinned
     double timeStampB = getTimeStamp();
 
-    int row_size = 1024 * 1024;
-
     // invoke Kernel
     dim3 block(1024, 1); // you will want to configure this
-    dim3 grid(noElems / 1024);
+    dim3 grid((nx + block.x - 1) / block.x, (ny + block.y - 1) / block.y);
 
     f_addmat << < grid, block >> > (d_A, d_B, d_C, nx, ny);
     cudaDeviceSynchronize();
