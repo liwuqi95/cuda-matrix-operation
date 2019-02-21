@@ -72,7 +72,7 @@ int main(int argc, char *argv[]) {
     dim3 block(1024, 1);
     dim3 grid((noElems + 1023) / 1024);
 
-    f_addmat << < grid, block >> > (d_A, d_R, nx, ny);
+    f_inverse << < grid, block >> > (d_A, d_R, nx, ny);
     cudaDeviceSynchronize();
 
     //copy data back
