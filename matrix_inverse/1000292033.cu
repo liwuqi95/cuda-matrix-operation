@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
 
     // invoke Kernel
     dim3 block(1024, 1);
-    dim3 grid((noElems + 1023) / 1024);
+    dim3 grid((nx + block.x - 1) / block.x, (ny + block.y - 1) / block.y);
 
     f_inverse << < grid, block >> > (d_A, d_R, nx, ny);
     cudaDeviceSynchronize();
