@@ -17,8 +17,8 @@ void h_inverse(float *A, float *B, int nx, int ny) {
 
 // device-side matrix addition
 __global__ void f_inverse(float *A, float *B, int nx, int ny) {
-    int ix = threadIdx.x + bloackIdx.x * blockDim.x;
-    int iy = threadIdx.y + bloackIdx.y * blockDim.y;
+    int ix = threadIdx.x + blockIdx.x * blockDim.x;
+    int iy = threadIdx.y + blockIdx.y * blockDim.y;
     int idx = iy * nx + ix;
     int n_idx = ix * ny + iy;
     if ((ix < nx) && (iy < ny))
