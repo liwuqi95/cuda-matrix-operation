@@ -25,7 +25,8 @@ __global__ void f_inverse(float *A, float *B, int nx, int ny, int noElems) {
         int i = idx / nx;
         int j = idx % nx;
         sdata[idx] = A[idx];
-        
+        __syncthreads();
+
         B[j * ny + i] = sdata[idx];
     }
 }
