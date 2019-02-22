@@ -17,7 +17,7 @@ void h_inverse(float *A, float *B, int nx, int ny) {
 
 // device-side matrix addition
 __global__ void f_inverse(float *A, float *B, int nx, int ny, int noElems) {
-    extern __shared__ float sdata[];
+    __shared__ float sdata[noElems];
 
     int idx = threadIdx.x + blockIdx.x * blockDim.x;
 
