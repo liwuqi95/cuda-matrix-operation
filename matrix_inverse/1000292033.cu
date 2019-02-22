@@ -24,10 +24,10 @@ __global__ void f_inverse(float *A, float *B, int nx, int ny, int noElems) {
     if (idx < noElems) {
         int i = idx / nx;
         int j = idx % nx;
-        sdata[idx] = A[idx];
+        sdata[idx % 1024] = A[idx];
         __syncthreads();
 
-        B[j * ny + i] = sdata[idx];
+        B[j * ny + i] = sdata[idx % 1024];
     }
 }
 
@@ -78,7 +78,7 @@ int main(int argc, char *argv[]) {
     dim3 block(1024, 1);
     dim3 grid((noElems + 1023) / 1024);
 
-    f_inverse << < grid, block, noElems * sizeof(float) >> > (d_A, d_R, nx, ny, noElems);
+    f_inverse << < grid, block, bytes >> > (d_A, d_R, nx, ny, noElems);
     cudaDeviceSynchronize();
 
     //copy data back
