@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
 
     // init matrices with random data
 
-    int i, j, index;
+    int i, j;
     for (i = 0; i < ny; i++)
         for (j = 0; j < nx; j++)
             h_A[i * nx + j] = rand();
@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
     bool correct = true;
 
     for (i = 0; i < nx * ny; i++)
-        if (h_hC[i] != h_dC[i]) {
+        if (h_hR[i] != h_dR[i]) {
             correct = false;
             break;
         }
@@ -99,7 +99,7 @@ int main(int argc, char *argv[]) {
         printf("Error: Result Incorrect!\n");
 
     cudaHostUnregister(h_A);
-    cudaHostUnregister(h_R);
+    cudaHostUnregister(h_dR);
 
 
     // print out results
