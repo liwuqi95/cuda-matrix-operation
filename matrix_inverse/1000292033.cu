@@ -17,17 +17,17 @@ void h_inverse(float *A, float *B, int nx, int ny) {
 
 // device-side matrix addition
 __global__ void f_inverse(float *A, float *B, int nx, int ny, int noElems) {
-    __shared__ float sdata[1024];
+    __shared__ float sdata[32];
 
     int idx = threadIdx.x + blockIdx.x * blockDim.x;
 
     if (idx < noElems) {
         int i = idx / nx;
         int j = idx % nx;
-        sdata[idx % 1024] = A[idx];
+        sdata[idx % 32] = A[idx];
         __syncthreads();
 
-        B[j * ny + i] = sdata[idx % 1024];
+        B[j * ny + i] = sdata[idx % 32];
     }
 }
 
@@ -75,8 +75,8 @@ int main(int argc, char *argv[]) {
 
 
     // invoke Kernel
-    dim3 block(1024, 1);
-    dim3 grid((noElems + 1023) / 1024);
+    dim3 block(32, 1);
+    dim3 grid((noElems + 31) / 32);
 
     f_inverse << < grid, block >> > (d_A, d_R, nx, ny, noElems);
     cudaDeviceSynchronize();
