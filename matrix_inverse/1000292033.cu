@@ -38,6 +38,8 @@ __global__ void f_inverse(float *A, float *B, int nx, int ny, int noElems) {
 
         int index_out = xBlock * ny + yBlock + threadIdx.x + 32 * threadIdx.y;
 
+        printf("in = %d, out = %d\n", index_in, index_out);
+
         for (int i = 0; i < 32 && index_out < noElems; i++) {
             B[index_out + i * ny] = sdata[threadIdx.x][i];
         }
