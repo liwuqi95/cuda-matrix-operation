@@ -19,8 +19,8 @@ void h_inverse(float *A, float *B, int nx, int ny) {
 __global__ void f_inverse(float *A, float *B, int nx, int ny, int noElems) {
     __shared__ float sdata[32][32];
 
-    int ix = threadId.x + blockId.x * blockDim.x;
-    int iy = threadId.y + blockId.y * blockDim.y;
+    int ix = threadIdx.x + blockIdx.x * blockDim.x;
+    int iy = threadIdx.y + blockIdx.y * blockDim.y;
     int idx = iy * nx + ix;
 
     if (idx < noElems) {
