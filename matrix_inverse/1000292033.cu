@@ -25,12 +25,11 @@ __global__ void f_inverse(float *A, float *B, int nx, int ny, int noElems) {
 
     if (ix < nx && iy < ny) {
 //        sdata[threadIdx.y][threadIdx.x] = A[idx];
-
         for (int i = 0; i < 32; i++)
             sdata[i][threadIdx.x] = A[idx + nx * i];
         __syncthreads();
         for (int i = 0; i < 32; i++)
-            B[ix * ny + iy + ny * i] = sdata[threadIdx.x][i];
+            B[idx + nx * i] = sdata[threadIdx.x][i];
 //        B[ix * ny + iy] = sdata[threadIdx.y][threadIdx.x];
     } else
         __syncthreads();
