@@ -69,22 +69,22 @@ int main(int argc, char *argv[]) {
     cudaMalloc((void **) &d_A, bytes);
     cudaMalloc((void **) &d_R, bytes);
 
-
+    double timeStampA = getTimeStamp();
     //transfer data to dev
     cudaMemcpy(d_A, h_A, bytes, cudaMemcpyHostToDevice);
 
-    double timeStampA = getTimeStamp();
+
     // invoke Kernel
     dim3 block(32, 32);
     dim3 grid((nx + block.x - 1) / block.x, (ny + block.y - 1) / block.y);
 
     f_inverse << < grid, block >> > (d_A, d_R, nx, ny, noElems);
     cudaDeviceSynchronize();
-    double timeStampD = getTimeStamp();
+
     //copy data back
     cudaMemcpy(h_dR, d_R, bytes, cudaMemcpyDeviceToHost);
 
-
+    double timeStampD = getTimeStamp();
     // free GPU resources
     cudaFree(d_A);
     cudaFree(d_R);
