@@ -30,7 +30,7 @@ __global__ void f_inverse(float *A, float *B, int nx, int ny, int noElems) {
 
         int index_in = yIndex * nx + xIndex;
 
-        for (int i = 0; i < 32 && index < noElems; i++) {
+        for (int i = 0; i < 32 && index_in < noElems; i++) {
             sdata[i][threadIdx.x] = A[index_in + nx * i];
         }
 
