@@ -115,6 +115,7 @@ int main(int argc, char *argv[]) {
     for (i = 0; i < nx * ny; i++)
         if (h_hR[i] != h_dR[i]) {
             correct = false;
+            printf("Error: Result Incorrect! -> %d", i);
             break;
         }
 
