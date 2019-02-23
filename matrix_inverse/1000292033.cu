@@ -24,10 +24,10 @@ __global__ void f_inverse(float *A, float *B, int nx, int ny, int noElems) {
     int idx = iy * nx + ix;
 
     if (idx < noElems) {
-        sdata[threadId.x + threadId.y * blockDim.x] = A[idx];
+        sdata[threadIdx.x + threadIdx.y * blockDim.x] = A[idx];
         __syncthreads();
 
-        B[ix * ny + iy] = sdata[threadId.x + threadId.y * blockDim.x];
+        B[ix * ny + iy] = sdata[threadIdx.x + threadIdx.y * blockDim.x];
     }
 }
 
