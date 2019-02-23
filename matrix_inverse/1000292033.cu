@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
 
 
     // invoke Kernel
-    dim3 block(32, 1);
+    dim3 block(32, 32);
     dim3 grid((nx + block.x - 1) / block.x, (ny + block.y * 32 - 1) / (block.y * 32));
 
     f_inverse << < grid, block >> > (d_A, d_R, nx, ny, noElems);
