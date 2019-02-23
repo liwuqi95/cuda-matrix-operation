@@ -26,7 +26,7 @@ __global__ void f_inverse(float *A, float *B, int nx, int ny, int noElems) {
     if (idx < noElems) {
         sdata[threadIdx.y][threadIdx.x] = A[idx];
         __syncthreads();
-        B[ix * ny + iy] = sdata[threadIdx.y][threadIdx.x];
+        B[ix * ny + iy] = sdata[threadIdx.x][threadIdx.y];
     } else
         __syncthreads();
 }
