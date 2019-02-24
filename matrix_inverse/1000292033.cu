@@ -37,7 +37,7 @@ __global__ void f_inverse(float *A, float *B, int nx, int ny, int noElems) {
 
     __syncthreads();
 
-    ix = yBlock + threadIdx.y * 32 + threadIdx.x;
+    ix = yBlock + threadIdx.x;
     iy = xBlock;
 
 
