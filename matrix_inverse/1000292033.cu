@@ -33,7 +33,7 @@ __global__ void f_inverse(float *A, float *B, int nx, int ny, int noElems) {
         y = iy + nx * i;
         if (x < nx && y < ny) {
             sdata[i][threadIdx.x] = A[y * nx + x];
-            printf("x = %d, y = %d \n", x, y);
+            printf("From x = %d, y = %d \n", x, y);
         }
     }
 
@@ -50,7 +50,7 @@ __global__ void f_inverse(float *A, float *B, int nx, int ny, int noElems) {
 
         if (x < ny && y < nx) {
             B[x + y * ny] = sdata[threadIdx.x][i];
-            printf("x = %d, y = %d \n", x, y);
+            printf("To x = %d, y = %d \n", x, y);
         }
     }
 }
