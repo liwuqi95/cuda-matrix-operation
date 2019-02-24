@@ -34,7 +34,7 @@ __global__ void f_inverse(float *A, float *B, int nx, int ny, int noElems) {
         index = index_in + nx * i;
         if (index < noElems) {
             sdata[i][threadIdx.x] = A[index];
-            printf("From %d \n", index_in + nx * i);
+            printf("From %d, index_in = %d \n", index_in + nx * i, index_in);
         }
     }
 
@@ -46,10 +46,9 @@ __global__ void f_inverse(float *A, float *B, int nx, int ny, int noElems) {
         index = index_out + i * ny;
         if (index < noElems) {
             B[index_out + i * ny] = sdata[threadIdx.x][i];
-            printf("To %d \n", index_out + i * ny);
+            printf("To %d, index_out = %d \n", index_out + i * ny, index_out);
         }
     }
-
 }
 
 int main(int argc, char *argv[]) {
