@@ -33,7 +33,7 @@ __global__ void f_inverse(float *A, float *B, int nx, int ny, int noElems) {
     for (int i = 0; i < 32; i++) {
         index = index_in + nx * i;
         if (index < noElems) {
-            sdata[i][threadIdx.x] = A[index;
+            sdata[i][threadIdx.x] = A[index];
             printf("From %d \n", index_in + nx * i);
         }
     }
