@@ -26,29 +26,30 @@ __global__ void f_inverse(float *A, float *B, int nx, int ny, int noElems) {
     int xIndex = xBlock + threadIdx.x;
     int yIndex = yBlock + threadIdx.y * 32;
 
-    if (xIndex < nx && yIndex < ny) {
 
-        int index_in = yIndex * nx + xIndex;
+    int index_in = yIndex * nx + xIndex;
+    int index;
 
-        for (int i = 0; i < 32 && index_in < noElems; i++) {
-            sdata[i][threadIdx.x] = A[index_in + nx * i];
-
+    for (int i = 0; i < 32; i++) {
+        index = index_in + nx * i;
+        if (index < noElems) {
+            sdata[i][threadIdx.x] = A[index;
             printf("From %d \n", index_in + nx * i);
         }
+    }
 
-        __syncthreads();
+    __syncthreads();
 
-        int index_out = xBlock * ny + yBlock + threadIdx.x + 32 * threadIdx.y;
+    int index_out = xBlock * ny + yBlock + threadIdx.x + 32 * threadIdx.y;
 
-
-        for (int i = 0; i < 32 && index_out < noElems; i++) {
-
-            printf("To %d \n", index_out + i * ny);
+    for (int i = 0; i < 32; i++) {
+        index = index_out + i * ny;
+        if (index < noElems) {
             B[index_out + i * ny] = sdata[threadIdx.x][i];
+            printf("To %d \n", index_out + i * ny);
         }
+    }
 
-    } else
-        __syncthreads();
 }
 
 int main(int argc, char *argv[]) {
