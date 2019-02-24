@@ -16,14 +16,26 @@ void h_inverse(float *A, float *B, int nx, int ny) {
 }
 
 // device-side matrix addition
-__global__ void f_inverse(float *A, float *B, int nx, int ny) {
+__global__ void f_inverse(float *A, float *B, int nx, int ny, bool reverse) {
     __shared__ float sdata[32][33];
 
-    int xBlock = blockIdx.x * blockDim.x;
-    int yBlock = blockIdx.y * blockDim.y * 32;
+    int xBlock, yBlock, threadIndex;
 
-    int ix = xBlock + threadIdx.x;
+
+    if (reverse) {
+        int xBlock = blockIdx.y * blockDim.y;
+        int yBlock = blockIdx.x * blockDim.x * 32;
+        threadIndex = threadIdx.y;
+    } else {
+        int xBlock = blockIdx.x * blockDim.x;
+        int yBlock = blockIdx.y * blockDim.y * 32;
+        threadIndex = threadIdx.x;
+    }
+
+
+    int ix = xBlock + threadIndex;
     int iy = yBlock;
+
 
     int x, y;
 
@@ -31,12 +43,12 @@ __global__ void f_inverse(float *A, float *B, int nx, int ny) {
         x = ix;
         y = iy + i;
         if (x < nx && y < ny)
-            sdata[i][threadIdx.x] = A[y * nx + x];
+            sdata[i][threadIndex] = A[y * nx + x];
     }
 
     __syncthreads();
 
-    ix = yBlock + threadIdx.x;
+    ix = yBlock + threadIndex;
     iy = xBlock;
 
 
@@ -44,7 +56,7 @@ __global__ void f_inverse(float *A, float *B, int nx, int ny) {
         x = ix;
         y = iy + i;
         if (x < ny && y < nx)
-            B[x + y * ny] = sdata[threadIdx.x][i];
+            B[x + y * ny] = sdata[threadIndex][i];
     }
 }
 
@@ -93,9 +105,15 @@ int main(int argc, char *argv[]) {
 
     // invoke Kernel
     dim3 block(32, 1);
-    dim3 grid((nx + block.x - 1) / block.x, (ny + block.y * 32 - 1) / (block.y * 32));
 
-    f_inverse << < grid, block >> > (d_A, d_R, nx, ny);
+    bool reverse = ny > nx;
+
+    if (reverse)
+        dim3 grid((ny + block.y * 32 - 1) / (block.y * 32), (nx + block.x - 1) / block.x);
+    else
+        dim3 grid((nx + block.x - 1) / block.x, (ny + block.y * 32 - 1) / (block.y * 32));
+
+    f_inverse << < grid, block >> > (d_A, d_R, nx, ny, reverse);
     cudaDeviceSynchronize();
 
     //copy data back
