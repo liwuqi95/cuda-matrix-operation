@@ -32,6 +32,8 @@ __global__ void f_inverse(float *A, float *B, int nx, int ny, int noElems) {
 
         for (int i = 0; i < 32 && index_in < noElems; i++) {
             sdata[i][threadIdx.x] = A[index_in + nx * i];
+
+            printf("From %d \n", index_in + nx * i);
         }
 
         __syncthreads();
@@ -41,7 +43,7 @@ __global__ void f_inverse(float *A, float *B, int nx, int ny, int noElems) {
 
         for (int i = 0; i < 32 && index_out < noElems; i++) {
 
-            printf("in = %d, out = %d, xIndex = %d, yIndex = %d \n", index_in, index_out, xIndex, yIndex);
+            printf("To %d \n", index_out + i * ny);
             B[index_out + i * ny] = sdata[threadIdx.x][i];
         }
 
