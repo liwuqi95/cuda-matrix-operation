@@ -46,7 +46,7 @@ __global__ void f_inverse(float *A, float *B, int nx, int ny, int noElems) {
     for (int i = 0; i < 32; i++) {
 
         x = ix + threadIdx.x;
-        y = iy;
+        y = iy + i;
 
         if (x < ny && y < nx) {
             B[x + y * ny] = sdata[threadIdx.x][i];
