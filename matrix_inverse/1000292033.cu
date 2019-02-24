@@ -19,34 +19,36 @@ void h_inverse(float *A, float *B, int nx, int ny) {
 __global__ void f_inverse(float *A, float *B, int nx, int ny, int noElems) {
     __shared__ float sdata[32][33];
 
-
     int xBlock = blockIdx.x * blockDim.x;
     int yBlock = blockIdx.y * blockDim.y * 32;
 
-    int xIndex = xBlock + threadIdx.x;
-    int yIndex = yBlock + threadIdx.y * 32;
+    int ix = xBlock + threadIdx.x;
+    int iy = yBlock + threadIdx.y * 32;
 
+    int x, y;
 
-    int index_in = yIndex * nx + xIndex;
-    int index;
 
     for (int i = 0; i < 32; i++) {
-        index = index_in + nx * i;
-        if (index < noElems) {
-            sdata[i][threadIdx.x] = A[index];
-            printf("From %d, index_in = %d \n", index_in + nx * i, index_in);
+        x = ix;
+        y = iy + nx * i;
+        if (x < nx && y < ny) {
+            sdata[i][threadIdx.x] = A[y * nx + x];
         }
     }
 
     __syncthreads();
 
-    int index_out = xBlock * ny + yBlock + threadIdx.x + 32 * threadIdx.y;
+    ix = yBlock + threadIdx.y * 32;
+    iy = xBlock;
+
 
     for (int i = 0; i < 32; i++) {
-        index = index_out + i * ny;
-        if (index < noElems) {
-            B[index_out + i * ny] = sdata[threadIdx.x][i];
-            printf("To %d, index_out = %d \n", index_out + i * ny, index_out);
+
+        x = ix + threadIdx.x;
+        y = iy;
+
+        if (x < ny && y < nx) {
+            B[x + y * ny] = sdata[threadIdx.x][i];
         }
     }
 }
