@@ -23,7 +23,7 @@ __global__ void f_inverse(float *A, float *B, int nx, int ny, int noElems) {
     int yBlock = blockIdx.y * blockDim.y * 32;
 
     int ix = xBlock + threadIdx.x;
-    int iy = yBlock + threadIdx.y * 32;
+    int iy = yBlock;
 
     int x, y;
 
@@ -92,7 +92,6 @@ int main(int argc, char *argv[]) {
     double timeStampA = getTimeStamp();
     //transfer data to dev
     cudaMemcpy(d_A, h_A, bytes, cudaMemcpyHostToDevice);
-
 
 
     // invoke Kernel
