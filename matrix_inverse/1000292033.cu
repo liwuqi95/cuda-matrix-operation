@@ -108,12 +108,15 @@ int main(int argc, char *argv[]) {
 
     bool reverse = ny > nx;
 
-    if (reverse)
+    if (reverse) {
         dim3 grid((ny + block.y * 32 - 1) / (block.y * 32), (nx + block.x - 1) / block.x);
-    else
+        f_inverse << < grid, block >> > (d_A, d_R, nx, ny, reverse);
+    } else {
+        f_inverse << < grid, block >> > (d_A, d_R, nx, ny, reverse);
         dim3 grid((nx + block.x - 1) / block.x, (ny + block.y * 32 - 1) / (block.y * 32));
+    }
 
-    f_inverse << < grid, block >> > (d_A, d_R, nx, ny, reverse);
+
     cudaDeviceSynchronize();
 
     //copy data back
