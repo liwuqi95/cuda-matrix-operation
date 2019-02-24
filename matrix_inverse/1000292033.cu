@@ -33,24 +33,24 @@ __global__ void f_inverse(float *A, float *B, int nx, int ny, int noElems) {
         y = iy + i;
         if (x < nx && y < ny) {
             sdata[i][threadIdx.x] = A[y * nx + x];
-            printf("From x = %d, y = %d \n", x, y);
+            printf("From x = %d, y = %d, value = %f \n", x, y, A[y * nx + x]);
         }
     }
 
     __syncthreads();
 
-    ix = yBlock + threadIdx.y * 32;
+    ix = yBlock + threadIdx.y * 32 + threadIdx.x;
     iy = xBlock;
 
 
     for (int i = 0; i < 32; i++) {
 
-        x = ix + threadIdx.x;
+        x = ix;
         y = iy + i;
 
         if (x < ny && y < nx) {
             B[x + y * ny] = sdata[threadIdx.x][i];
-            printf("To x = %d, y = %d \n", x, y);
+            printf("To x = %d, y = %d, value = %f \n", x, y, B[x + y * ny]);
         }
     }
 }
@@ -99,7 +99,7 @@ int main(int argc, char *argv[]) {
 
 
     // invoke Kernel
-    dim3 block(32, 1);
+    dim3 block(32, 2);
     dim3 grid((nx + block.x - 1) / block.x, (ny + block.y * 32 - 1) / (block.y * 32));
 
     f_inverse << < grid, block >> > (d_A, d_R, nx, ny, noElems);
