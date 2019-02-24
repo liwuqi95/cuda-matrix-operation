@@ -22,16 +22,17 @@ __global__ void f_inverse(float *A, float *B, int nx, int ny, bool reverse) {
     int xBlock, yBlock, threadIndex;
 
 
-    if (reverse) {
-        xBlock = blockIdx.y * blockDim.y;
-        yBlock = blockIdx.x * blockDim.x * 32;
-        threadIndex = threadIdx.y;
-    } else {
-        xBlock = blockIdx.x * blockDim.x;
-        yBlock = blockIdx.y * blockDim.y * 32;
-        threadIndex = threadIdx.x;
-    }
+//    xBlock = blockIdx.x * blockDim.x;
+//    yBlock = blockIdx.y * blockDim.y * 32;
+//    threadIndex = threadIdx.x;
 
+    xBlock = blockIdx.x % ((nx + 31) / 32);
+    xBlock *= 32;
+
+    yBlock = blockIdx.x / ((nx + 31) / 32);
+    yBlock *= 32;
+
+    threadIndex = threadIdx.x % 32;
 
     int ix = xBlock + threadIndex;
     int iy = yBlock;
@@ -106,16 +107,8 @@ int main(int argc, char *argv[]) {
     // invoke Kernel
     dim3 block(32, 1);
 
-    bool reverse = ny > nx;
-
-    if (reverse) {
-        dim3 grid((ny + block.y * 32 - 1) / (block.y * 32), (nx + block.x - 1) / block.x);
-        f_inverse << < grid, block >> > (d_A, d_R, nx, ny, reverse);
-    } else {
-        dim3 grid((nx + block.x - 1) / block.x, (ny + block.y * 32 - 1) / (block.y * 32));
-        f_inverse << < grid, block >> > (d_A, d_R, nx, ny, reverse);
-    }
-
+    dim3 grid(((nx + block.x - 1) / block.x) * ((ny + block.y * 32 - 1) / (block.y * 32)));
+    f_inverse << < grid, block >> > (d_A, d_R, nx, ny, reverse);
 
     cudaDeviceSynchronize();
 
