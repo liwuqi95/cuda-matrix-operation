@@ -38,9 +38,10 @@ __global__ void f_inverse(float *A, float *B, int nx, int ny, int noElems) {
 
         int index_out = xBlock * ny + yBlock + threadIdx.x + 32 * threadIdx.y;
 
-        printf("in = %d, out = %d, xIndex = %d, yIndex = %d \n", index_in, index_out, xIndex, yIndex);
 
         for (int i = 0; i < 32 && index_out < noElems; i++) {
+
+            printf("in = %d, out = %d, xIndex = %d, yIndex = %d \n", index_in, index_out, xIndex, yIndex);
             B[index_out + i * ny] = sdata[threadIdx.x][i];
         }
 
@@ -92,7 +93,7 @@ int main(int argc, char *argv[]) {
 
 
     // invoke Kernel
-    dim3 block(32, 8);
+    dim3 block(32, 2);
     dim3 grid((nx + block.x - 1) / block.x, (ny + block.y * 32 - 1) / (block.y * 32));
 
     f_inverse << < grid, block >> > (d_A, d_R, nx, ny, noElems);
@@ -115,7 +116,6 @@ int main(int argc, char *argv[]) {
     for (i = 0; i < nx * ny; i++)
         if (h_hR[i] != h_dR[i]) {
             correct = false;
-            printf("Error: Result Incorrect! -> %d", i);
             break;
         }
 
