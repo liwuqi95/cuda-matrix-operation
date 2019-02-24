@@ -31,6 +31,7 @@ __global__ void f_inverse(float *A, float *B, int nx, int ny, int noElems) {
     for (int i = 0; i < 32; i++) {
         x = ix;
         y = iy + nx * i;
+        printf("Try x = %d, y = %d \n", x, y);
         if (x < nx && y < ny) {
             sdata[i][threadIdx.x] = A[y * nx + x];
             printf("From x = %d, y = %d \n", x, y);
