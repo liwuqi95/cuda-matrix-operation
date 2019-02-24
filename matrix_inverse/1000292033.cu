@@ -23,12 +23,12 @@ __global__ void f_inverse(float *A, float *B, int nx, int ny, bool reverse) {
 
 
     if (reverse) {
-        int xBlock = blockIdx.y * blockDim.y;
-        int yBlock = blockIdx.x * blockDim.x * 32;
+        xBlock = blockIdx.y * blockDim.y;
+        yBlock = blockIdx.x * blockDim.x * 32;
         threadIndex = threadIdx.y;
     } else {
-        int xBlock = blockIdx.x * blockDim.x;
-        int yBlock = blockIdx.y * blockDim.y * 32;
+        xBlock = blockIdx.x * blockDim.x;
+        yBlock = blockIdx.y * blockDim.y * 32;
         threadIndex = threadIdx.x;
     }
 
